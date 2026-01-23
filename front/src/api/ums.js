@@ -1,4 +1,4 @@
-const UMS_BASE = 'http://localhost:8084';
+const UMS_BASE = '';
 
 export async function login(credentials) {
   const res = await fetch(`${UMS_BASE}/ums/authorization`, {

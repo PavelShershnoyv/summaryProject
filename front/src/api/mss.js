@@ -1,4 +1,4 @@
-const MSS_BASE = 'http://localhost:8082';
+const MSS_BASE = '';
 
 export async function getAllMessages() {
   const token = localStorage.getItem('jwt');
