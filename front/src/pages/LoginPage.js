@@ -1,0 +1,85 @@
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { login } from '../api/ums';
+
+function LoginPage() {
+  const [form, setForm] = useState({ username: '', password: '' });
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setError('');
+    try {
+      const { token, userId } = await login({
+        username: (form.username || '').trim(),
+        password: (form.password || '').trim(),
+      });
+      localStorage.setItem('jwt', token);
+      localStorage.setItem('userId', String(userId));
+      navigate('/app');
+    } catch (e) {
+      const msg = String(e?.message);
+      if (msg === 'AUTH_FORBIDDEN' || msg === 'AUTH_UNAUTHORIZED') {
+        setError('Неверные учетные данные');
+      } else {
+        setError('Ошибка авторизации');
+      }
+    }
+  };
+
+  return (
+    <div className="container py-5">
+      <div className="row justify-content-center">
+        <div className="col-md-6 col-lg-5">
+          <div className="card shadow-sm">
+            <div className="card-body p-4">
+              <h2 className="h4 mb-3">Авторизация</h2>
+              <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                  <label className="form-label">Логин</label>
+                  <input
+                    type="text"
+                    name="username"
+                    className="form-control"
+                    value={form.username}
+                    onChange={handleChange}
+                    placeholder="ivan.petrov"
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Пароль</label>
+                  <input
+                    type="password"
+                    name="password"
+                    className="form-control"
+                    value={form.password}
+                    onChange={handleChange}
+                    placeholder="••••••••"
+                    required
+                  />
+                </div>
+                {error && <div className="alert alert-danger">{error}</div>}
+                <button type="submit" className="btn btn-primary w-100">
+                  Войти
+                </button>
+              </form>
+              <div className="mt-3 text-center">
+                <span className="text-muted">Нет аккаунта? </span>
+                <Link to="/register">Регистрация</Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default LoginPage;
