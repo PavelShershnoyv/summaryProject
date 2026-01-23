@@ -7,6 +7,23 @@ function LoginPage() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  const decodeJwtPayload = (token) => {
+    if (!token || typeof token !== 'string') return null;
+    const parts = token.split('.');
+    if (parts.length < 2) return null;
+    let base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const pad = base64.length % 4;
+    if (pad) {
+      base64 += '='.repeat(4 - pad);
+    }
+    try {
+      const json = atob(base64);
+      return JSON.parse(json);
+    } catch {
+      return null;
+    }
+  };
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -21,7 +38,12 @@ function LoginPage() {
         password: (form.password || '').trim(),
       });
       localStorage.setItem('jwt', token);
-      localStorage.setItem('userId', String(userId));
+      const payload = decodeJwtPayload(token);
+      const idFromToken = payload && (payload.id != null ? payload.id : null);
+      const finalId = idFromToken != null ? idFromToken : userId;
+      if (finalId != null) {
+        localStorage.setItem('userId', String(finalId));
+      }
       navigate('/app');
     } catch (e) {
       const msg = String(e?.message);
