@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mss
+  namespace: project
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mss
+  template:
+    metadata:
+      labels:
+        app: mss
+    spec:
+      containers:
+        - name: mss
+          image: project/mss:latest
+          ports:
+            - containerPort: 8082
+          env:
+            - name: SPRING_APPLICATION_NAME
+              value: MSS
+            - name: SERVER_PORT
+              value: "8082"

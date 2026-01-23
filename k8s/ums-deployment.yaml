@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ums
+  namespace: project
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ums
+  template:
+    metadata:
+      labels:
+        app: ums
+    spec:
+      containers:
+        - name: ums
+          image: project/ums:latest
+          ports:
+            - containerPort: 8084
+          env:
+            - name: SPRING_APPLICATION_NAME
+              value: UMS
+            - name: SERVER_PORT
+              value: "8084"
