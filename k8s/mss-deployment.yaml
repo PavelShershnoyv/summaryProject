@@ -16,6 +16,7 @@ spec:
       containers:
         - name: mss
           image: project/mss:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8082
           env:

@@ -16,5 +16,6 @@ spec:
       containers:
         - name: front
           image: project/front:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
