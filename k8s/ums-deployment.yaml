@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: ums
-          image: project/ums:latest
+          image: project/ums:1.0.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8084
